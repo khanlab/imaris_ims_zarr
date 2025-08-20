@@ -109,16 +109,19 @@ class ims_reader:
                 int(self.read_attribute(location_attr, 'ImageSizeY')),
                 int(self.read_attribute(location_attr, 'ImageSizeX'))
             )
-            
-            
-            
-            #Collect Resolution information
-            self.metaData[r, t, c, 'resolution'] = tuple(
-                [float((origShape / newShape) * origRes) for origRes, origShape, newShape in
-                 zip(self.resolution, self.shape[-3:], self.metaData[r, t, c, 'shape'][-3:])]
+
+            if r == 0:
+                self.metaData[r, t, c, 'resolution'] = tuple(self.resolution)
+            else:
+                # Determine if sampling is 1x or 2x for each dimension based on the adjacent resolution level shape
+                # Use this sampling factor to calculate resolution at the current resolution level
+                sampling = [x//y for x,y in zip(self.metaData[r-1, t, c, 'shape'], self.metaData[r, t, c, 'shape'])]
+                sampling = sampling[2:]
+                self.metaData[r, t, c, 'resolution'] = tuple(
+                    [float(x*y) for x,y in zip(sampling, self.metaData[r-1, t, c, 'resolution'])]
                 )
             
-            #Round Resolution
+            #Round Resolution if resolution_decimal_places is specified
             self.metaData[r, t, c, 'resolution'] = tuple(
                 [round(x,self.resolution_decimal_places) if self.resolution_decimal_places is not None else x for x in self.metaData[r, t, c, 'resolution']]
                 )
