@@ -4,6 +4,7 @@
 import asyncio
 import itertools
 import os
+import sys
 from collections.abc import AsyncIterator, Iterable
 
 import numpy as np
@@ -22,6 +23,8 @@ import imaris_ims_file_reader as ims
 
 class ims_zarr_store(Store):
     """Zarr v3 storage adapter for reading IMS files."""
+
+    PARTIAL_READ_BATCH_SIZE: int = 64
 
     supports_writes: bool = False
     supports_deletes: bool = False
@@ -76,7 +79,12 @@ class ims_zarr_store(Store):
 
     def _build_zarr_json(self) -> bytes:
         metadata_store: dict[str, Buffer] = {}
-        endian = "little" if self.dtype.byteorder in ("<", "=", "|") else "big"
+        if self.dtype.byteorder in ("<", "|"):
+            endian = "little"
+        elif self.dtype.byteorder == ">":
+            endian = "big"
+        else:
+            endian = sys.byteorder
 
         zarr.open_array(
             store=metadata_store,
@@ -169,7 +177,7 @@ class ims_zarr_store(Store):
     ) -> list[Buffer | None]:
         results: list[Buffer | None] = []
         key_ranges_iter = iter(key_ranges)
-        batch_size = 64
+        batch_size = self.PARTIAL_READ_BATCH_SIZE
 
         while True:
             batch = list(itertools.islice(key_ranges_iter, batch_size))
