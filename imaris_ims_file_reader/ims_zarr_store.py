@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Zarr v3 store adapter for reading IMS files."""
 
+import asyncio
 import itertools
 import os
 from collections.abc import AsyncIterator, Iterable
@@ -150,7 +151,7 @@ class ims_zarr_store(Store):
 
         try:
             chunk_index = self._chunk_index_from_key(normalized_key)
-        except Exception:
+        except (ValueError, IndexError):
             return None
 
         data = self._chunk_bytes(chunk_index)
@@ -161,7 +162,11 @@ class ims_zarr_store(Store):
         prototype: BufferPrototype,
         key_ranges: Iterable[tuple[str, ByteRequest | None]],
     ) -> list[Buffer | None]:
-        return [await self.get(key, prototype=prototype, byte_range=byte_range) for key, byte_range in key_ranges]
+        tasks = [
+            self.get(key, prototype=prototype, byte_range=byte_range)
+            for key, byte_range in key_ranges
+        ]
+        return await asyncio.gather(*tasks)
 
     async def exists(self, key: str) -> bool:
         normalized_key = self._normalize_key(key)
@@ -170,7 +175,7 @@ class ims_zarr_store(Store):
         try:
             _ = self._chunk_index_from_key(normalized_key)
             return True
-        except Exception:
+        except (ValueError, IndexError):
             return False
 
     async def set(self, key: str, value: Buffer) -> None:
