@@ -162,11 +162,21 @@ class ims_zarr_store(Store):
         prototype: BufferPrototype,
         key_ranges: Iterable[tuple[str, ByteRequest | None]],
     ) -> list[Buffer | None]:
-        tasks = [
-            self.get(key, prototype=prototype, byte_range=byte_range)
-            for key, byte_range in key_ranges
-        ]
-        return await asyncio.gather(*tasks)
+        results: list[Buffer | None] = []
+        key_ranges_iter = iter(key_ranges)
+        batch_size = 64
+
+        while True:
+            batch = list(itertools.islice(key_ranges_iter, batch_size))
+            if not batch:
+                break
+            tasks = [
+                self.get(key, prototype=prototype, byte_range=byte_range)
+                for key, byte_range in batch
+            ]
+            results.extend(await asyncio.gather(*tasks))
+
+        return results
 
     async def exists(self, key: str) -> bool:
         normalized_key = self._normalize_key(key)
