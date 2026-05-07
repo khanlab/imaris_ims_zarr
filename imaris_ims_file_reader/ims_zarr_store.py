@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class ims_zarr_store(Store):
-    """Zarr v3 storage adapter for reading IMS files."""
+    """Zarr v3 store adapter for reading IMS files."""
 
     PARTIAL_READ_BATCH_SIZE: int = 64
 
@@ -68,8 +68,8 @@ class ims_zarr_store(Store):
 
         self._zarr_json = self._build_zarr_json()
 
-    def __eq__(self, value: object) -> bool:
-        return isinstance(value, ims_zarr_store) and self.path == value.path and self.ResolutionLevelLock == value.ResolutionLevelLock
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, ims_zarr_store) and self.path == other.path and self.ResolutionLevelLock == other.ResolutionLevelLock
 
     def open_ims(self):
         return ims.ims(
@@ -120,7 +120,10 @@ class ims_zarr_store(Store):
         return data
 
     def _chunk_index_from_key(self, key: str) -> list[tuple[int, int]]:
-        key_split = [int(x) for x in key.split(".")]
+        try:
+            key_split = [int(x) for x in key.split(".")]
+        except ValueError as exc:
+            raise ValueError(f"Invalid chunk key format: {key!r}; expected dot-separated integer indices") from exc
         index = []
         for axis, chunk_idx in enumerate(key_split):
             start = self.chunks[axis] * chunk_idx
@@ -170,8 +173,7 @@ class ims_zarr_store(Store):
         try:
             chunk_index = self._chunk_index_from_key(normalized_key)
         except (ValueError, IndexError):
-            if self.verbose:
-                logger.debug("Invalid chunk key requested: %s", key)
+            logger.debug("Invalid chunk key requested: %s", key)
             return None
 
         data = self._chunk_bytes(chunk_index)
@@ -236,6 +238,7 @@ class ims_zarr_store(Store):
                 yield remainder.split("/", 1)[0]
 
     def _iter_chunk_keys(self):
+        """Yield all chunk keys for the current IMS array using dot-separated indices."""
         chunk_num = []
         for axis in range(5):
             count = self.shape[axis] // self.chunks[axis]
