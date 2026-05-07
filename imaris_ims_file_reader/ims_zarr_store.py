@@ -5,6 +5,7 @@ import asyncio
 import itertools
 import os
 import sys
+import logging
 from collections.abc import AsyncIterator, Iterable
 
 import numpy as np
@@ -20,11 +21,15 @@ from zarr.core.buffer import Buffer, BufferPrototype, default_buffer_prototype
 
 import imaris_ims_file_reader as ims
 
+logger = logging.getLogger(__name__)
+
 
 class ims_zarr_store(Store):
     """Zarr v3 storage adapter for reading IMS files."""
 
     PARTIAL_READ_BATCH_SIZE: int = 64
+
+    __hash__ = None
 
     supports_writes: bool = False
     supports_deletes: bool = False
@@ -83,8 +88,10 @@ class ims_zarr_store(Store):
             endian = "little"
         elif self.dtype.byteorder == ">":
             endian = "big"
-        else:
+        elif self.dtype.byteorder == "=":
             endian = sys.byteorder
+        else:
+            raise ValueError(f"Unsupported dtype byteorder: {self.dtype.byteorder!r}")
 
         zarr.open_array(
             store=metadata_store,
@@ -164,7 +171,7 @@ class ims_zarr_store(Store):
             chunk_index = self._chunk_index_from_key(normalized_key)
         except (ValueError, IndexError):
             if self.verbose:
-                print(f"Invalid chunk key requested: {key}")
+                logger.debug("Invalid chunk key requested: %s", key)
             return None
 
         data = self._chunk_bytes(chunk_index)
