@@ -52,7 +52,10 @@ class ims_zarr_store(Store):
         self.Channels = self.ims.Channels
         self.chunks = self.ims.chunks
         self.shape = self.ims.shape
-        self.dtype = np.dtype(self.ims.dtype)
+        try:
+            self.dtype = np.dtype(self.ims.dtype)
+        except TypeError as exc:
+            raise TypeError(f"Unsupported IMS dtype: {self.ims.dtype!r}") from exc
         self.ndim = self.ims.ndim
 
         self._zarr_json = self._build_zarr_json()
@@ -73,7 +76,7 @@ class ims_zarr_store(Store):
 
     def _build_zarr_json(self) -> bytes:
         metadata_store: dict[str, Buffer] = {}
-        endian = "little" if self.dtype.byteorder in ("<", "=") else "big"
+        endian = "little" if self.dtype.byteorder in ("<", "=", "|") else "big"
 
         zarr.open_array(
             store=metadata_store,
@@ -120,7 +123,7 @@ class ims_zarr_store(Store):
             index[4][0] : index[4][1],
         ]
 
-        if array.shape != self.chunks:
+        if tuple(array.shape) != tuple(self.chunks):
             canvas = np.zeros(self.chunks, dtype=array.dtype)
             canvas[
                 0 : array.shape[0],
@@ -152,6 +155,8 @@ class ims_zarr_store(Store):
         try:
             chunk_index = self._chunk_index_from_key(normalized_key)
         except (ValueError, IndexError):
+            if self.verbose:
+                print(f"Invalid chunk key requested: {key}")
             return None
 
         data = self._chunk_bytes(chunk_index)
