@@ -87,6 +87,9 @@ class ImsProcessSafeStore(Store):
         return state
 
     def __setstate__(self, state: dict) -> None:
+        # All scalar metadata attributes (shape, dtype, chunks, …) survive
+        # pickling unchanged via the regular dict; only the unpicklable HDF5
+        # handle (_store) was nulled in __getstate__ and must be recreated.
         self.__dict__.update(state)
         self._store = self._create_store()
 
