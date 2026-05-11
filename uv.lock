@@ -191,7 +191,7 @@ wheels = [
 ]
 
 [[package]]
-name = "imaris-ims-file-reader"
+name = "imaris-ims-zarr"
 source = { editable = "." }
 dependencies = [
     { name = "h5py" },
