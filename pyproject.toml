@@ -62,7 +62,7 @@ packages = ["imaris_ims_zarr"]
 
 [tool.coverage.run]
 source = ["imaris_ims_zarr"]
-omit = ["*/_version.py", "*/__pycache__/*", "*/tests/*"]
+omit = ["*/_version.py", "*/__pycache__/*", "*/tests/*", "*/_tests/*"]
 
 [tool.coverage.report]
 show_missing = true
