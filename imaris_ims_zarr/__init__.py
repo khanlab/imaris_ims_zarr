@@ -5,3 +5,4 @@ except ImportError:
 
 
 from .ims import ims
+from .ims_process_safe_store import ImsProcessSafeStore
