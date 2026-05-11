@@ -35,4 +35,4 @@ jobs:
 
     - name: Run tests with coverage (Python 3.13 only)
       if: matrix.python-version == '3.13'
-      run: pytest -v --color=yes --cov=imaris_ims_file_reader --cov-report=xml
+      run: pytest -v --color=yes --cov=imaris_ims_zarr --cov-report=xml
