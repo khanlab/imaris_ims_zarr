@@ -106,7 +106,8 @@ print(zarray2[0, 0, :, :, :].shape)
 
 
 
-#### Change Log:
+#### Historical Change Log (from imaris_ims_file_reader this was adapted from):
+
 
 ##### v0.1.3:
 
@@ -138,10 +139,3 @@ Bug Fix:  Issue #4, get_Volume_At_Specific_Resolution does not extract the desir
 
 -Added a new ims convenience function.  This aims to be a drop in replacement with all previous versions of the library, but adds an 'aszarr' option.  If aszarr=True (default:False), the object returned is a zarr store.  zarr.open(store,mode='r') to interact with the array.
 
-**v0.2.0 (imaris-ims-zarr):**
-
--Package renamed from imaris-ims-file-reader to imaris-ims-zarr.
-
--Zarr store updated to zarr v3 API.
-
--Added ImsProcessSafeStore: a picklable zarr store wrapper safe for use with multiprocessing, Dask, and other distributed frameworks.
