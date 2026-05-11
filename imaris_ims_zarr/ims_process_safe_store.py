@@ -19,7 +19,7 @@ from zarr.core.buffer import Buffer, BufferPrototype
 class ImsProcessSafeStore(Store):
     """IMS zarr store wrapper that can be serialized across distributed workers.
 
-    The underlying :class:`~imaris_ims_file_reader.ims_zarr_store.ims_zarr_store`
+    The underlying :class:`~imaris_ims_zarr.ims_zarr_store.ims_zarr_store`
     holds an open HDF5 file handle which is not picklable.  This class works
     around that limitation by nulling out the inner store before pickling and
     recreating it transparently on first access after deserialization.
@@ -98,7 +98,7 @@ class ImsProcessSafeStore(Store):
     # ------------------------------------------------------------------
 
     def _create_store(self):
-        from imaris_ims_file_reader.ims_zarr_store import ims_zarr_store
+        from imaris_ims_zarr.ims_zarr_store import ims_zarr_store
 
         return ims_zarr_store(
             self.path,

@@ -1,7 +1,7 @@
 import os
 import pickle
-from imaris_ims_file_reader.ims import ims
-from imaris_ims_file_reader import ImsProcessSafeStore
+from imaris_ims_zarr.ims import ims
+from imaris_ims_zarr import ImsProcessSafeStore
 import numpy as np
 import zarr
 
