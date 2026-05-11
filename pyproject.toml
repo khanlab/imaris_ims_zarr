@@ -1,7 +1,7 @@
 [project]
 name = "imaris_ims_zarr"
 dynamic = ["version"]
-description = "Class for reading Bitplane imaris files (*.ims) as zarr, adapted from AM Watson imaris_ims_zarr"
+description = "Class for reading Bitplane imaris files (*.ims) as zarr, adapted from AM Watson imaris_ims_file_reader"
 authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"},{name = "Ali Khan", email = "alik@robarts.ca"}
 ]
 license = {text = "BSD-3-Clause"}
