@@ -1,5 +1,5 @@
 import os
-from imaris_ims_file_reader.ims import ims
+from imaris_ims_zarr.ims import ims
 import numpy as np
 import zarr
 
