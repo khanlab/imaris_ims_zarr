@@ -5,7 +5,7 @@ description = "Class for reading Bitplane imaris files (*.ims)"
 authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"}]
 license = {text = "BSD-3-Clause"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11,<3.14"
 keywords = ["imaris", "ims", "microscopy", "bioimaging", "zarr", "hdf5"]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
@@ -13,11 +13,9 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Image Processing",
 ]
 
