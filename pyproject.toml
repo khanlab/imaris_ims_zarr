@@ -1,8 +1,9 @@
 [project]
-name = "imaris_ims_file_reader"
+name = "imaris_ims_zarr"
 dynamic = ["version"]
-description = "Class for reading Bitplane imaris files (*.ims)"
-authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"}]
+description = "Class for reading Bitplane imaris files (*.ims) as zarr, adapted from AM Watson imaris_ims_file_reader"
+authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"},{name = "Ali Khan", email = "alik@robarts.ca"}
+]
 license = {text = "BSD-3-Clause"}
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
@@ -48,7 +49,7 @@ source = "vcs"
 raw-options = { local_scheme = "no-local-version" }
 
 [tool.hatch.build.hooks.vcs]
-version-file = "imaris_ims_file_reader/_version.py"
+version-file = "imaris_ims_zarr/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["imaris_ims_file_reader"]

@@ -19,7 +19,7 @@ from zarr.abc.store import (
 )
 from zarr.core.buffer import Buffer, BufferPrototype, default_buffer_prototype
 
-import imaris_ims_file_reader as ims
+import imaris_ims_zarr as ims
 
 logger = logging.getLogger(__name__)
 

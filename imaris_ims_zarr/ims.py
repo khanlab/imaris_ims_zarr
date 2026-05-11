@@ -13,7 +13,7 @@ def ims(file, ResolutionLevelLock=0, write=False, cache_location=None, mem_size=
              resolution_decimal_places = 3, 
              aszarr=False, verbose=False):
     if aszarr:
-        from imaris_ims_file_reader import ims_zarr_store
+        from imaris_ims_zarr import ims_zarr_store
         return ims_zarr_store.ims_zarr_store(file,ResolutionLevelLock=ResolutionLevelLock, verbose=verbose)
     else:
         return ims_reader(
@@ -130,13 +130,13 @@ class ims_reader:
                 self.metaData[r, t, c, 'HistogramMax'] = int(float(self.read_attribute(location_attr, 'HistogramMax')))
             except:
                 warntxt = '''HistogramMax value is not present for resolution {}, time {}, channel {}. 
-                              This may cause compatibility issues with programs that use imaris_ims_file_reader'''.format(r,t,c)
+                              This may cause compatibility issues with programs that use imaris_ims_zarr'''.format(r,t,c)
                 warnings.warn(warntxt)
             try:
                 self.metaData[r, t, c, 'HistogramMin'] = int(float(self.read_attribute(location_attr, 'HistogramMin')))
             except:
                 warntxt = '''HistogramMin value is not present for resolution {}, time {}, channel {}.
-                              This may cause compatibility issues with programs that use imaris_ims_file_reader'''.format(r,t,c)
+                              This may cause compatibility issues with programs that use imaris_ims_zarr'''.format(r,t,c)
                 warnings.warn(warntxt)
 
             # Collect dataset info
