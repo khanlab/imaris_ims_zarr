@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
     - uses: actions/checkout@v4
@@ -33,6 +33,6 @@ jobs:
     - name: Run tests
       run: pytest -v --color=yes
 
-    - name: Run tests with coverage (Python 3.12 only)
-      if: matrix.python-version == '3.12'
+    - name: Run tests with coverage (Python 3.13 only)
+      if: matrix.python-version == '3.13'
       run: pytest -v --color=yes --cov=imaris_ims_file_reader --cov-report=xml
