@@ -1,5 +1,7 @@
 import os
+import pickle
 from imaris_ims_file_reader.ims import ims
+from imaris_ims_file_reader import ImsProcessSafeStore
 import numpy as np
 import zarr
 
@@ -28,4 +30,36 @@ def test(tmp_path='brain_crop3.ims'):
     zarray = zarr.open_array(store=store, mode="r")
     array = zarray[0,0,:,:,:]
     assert isinstance(array, np.ndarray)
-    
+
+
+def test_process_safe_store(tmp_path='brain_crop3.ims'):
+    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), tmp_path)
+
+    # Construct the process-safe store and verify basic attributes
+    store = ImsProcessSafeStore(path)
+    assert isinstance(store.TimePoints, int)
+    assert isinstance(store.Channels, int)
+    assert isinstance(store.ResolutionLevels, int)
+    assert isinstance(store.resolution, tuple)
+    assert len(store.resolution) == 3
+
+    # The store should be readable as a zarr array
+    zarray = zarr.open_array(store=store, mode="r")
+    array = zarray[0, 0, :, :, :]
+    assert isinstance(array, np.ndarray)
+
+    # Round-trip through pickle and verify the deserialized store still works
+    data_before = zarray[0, 0, :, :, :]
+
+    pickled = pickle.dumps(store)
+    store2 = pickle.loads(pickled)
+
+    assert store2.path == store.path
+    assert store2.ResolutionLevelLock == store.ResolutionLevelLock
+    assert store2.shape == store.shape
+
+    zarray2 = zarr.open_array(store=store2, mode="r")
+    data_after = zarray2[0, 0, :, :, :]
+    assert isinstance(data_after, np.ndarray)
+    np.testing.assert_array_equal(data_before, data_after)
+
