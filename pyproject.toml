@@ -1,7 +1,7 @@
 [project]
 name = "imaris_ims_zarr"
 dynamic = ["version"]
-description = "Class for reading Bitplane imaris files (*.ims) as zarr, adapted from AM Watson imaris_ims_file_reader"
+description = "Class for reading Bitplane imaris files (*.ims) as zarr, adapted from AM Watson imaris_ims_zarr"
 authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"},{name = "Ali Khan", email = "alik@robarts.ca"}
 ]
 license = {text = "BSD-3-Clause"}
@@ -36,9 +36,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/khanlab/imaris_ims_file_reader"
-Repository = "https://github.com/khanlab/imaris_ims_file_reader"
-Issues = "https://github.com/khanlab/imaris_ims_file_reader/issues"
+Homepage = "https://github.com/khanlab/imaris_ims_zarr"
+Repository = "https://github.com/khanlab/imaris_ims_zarr"
+Issues = "https://github.com/khanlab/imaris_ims_zarr/issues"
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
@@ -48,14 +48,20 @@ build-backend = "hatchling.build"
 source = "vcs"
 raw-options = { local_scheme = "no-local-version" }
 
+[tool.hatch.build]
+exclude = [
+    "imaris_ims_zarr/_tests/**",
+    "**/*.ims",
+]
+
 [tool.hatch.build.hooks.vcs]
 version-file = "imaris_ims_zarr/_version.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["imaris_ims_file_reader"]
+packages = ["imaris_ims_zarr"]
 
 [tool.coverage.run]
-source = ["imaris_ims_file_reader"]
+source = ["imaris_ims_zarr"]
 omit = ["*/_version.py", "*/__pycache__/*", "*/tests/*"]
 
 [tool.coverage.report]
