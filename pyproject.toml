@@ -1,5 +1,5 @@
 [project]
-name = "imaris-ims-file-reader"
+name = "imaris_ims_file_reader"
 dynamic = ["version"]
 description = "Class for reading Bitplane imaris files (*.ims)"
 authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"}]
