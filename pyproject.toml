@@ -1,6 +1,62 @@
-[build-system]
-requires = [
-    "setuptools>=58.0.4",
-    "wheel"
+[project]
+name = "imaris_ims_file_reader"
+dynamic = ["version"]
+description = "Class for reading Bitplane imaris files (*.ims)"
+authors = [{name = "Alan M Watson", email = "alan.watson@pitt.edu"}]
+license = {text = "BSD-3-Clause"}
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+keywords = ["imaris", "ims", "microscopy", "bioimaging", "zarr", "hdf5"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Image Processing",
 ]
-build-backend = "setuptools.build_meta"
+
+dependencies = [
+    "numpy",
+    "h5py>=3.5.0",
+    "hdf5plugin",
+    "scikit-image",
+    "zarr>=3",
+    "numcodecs",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/khanlab/imaris_ims_file_reader"
+Repository = "https://github.com/khanlab/imaris_ims_file_reader"
+Issues = "https://github.com/khanlab/imaris_ims_file_reader/issues"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { local_scheme = "no-local-version" }
+
+[tool.hatch.build.hooks.vcs]
+version-file = "imaris_ims_file_reader/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["imaris_ims_file_reader"]
+
+[tool.coverage.run]
+source = ["imaris_ims_file_reader"]
+omit = ["*/_version.py", "*/__pycache__/*", "*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
